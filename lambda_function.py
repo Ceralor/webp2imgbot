@@ -1,14 +1,13 @@
-import json
-from PIL import Image
-from io import BytesIO
+from json import loads as jsload
+from subprocess import run
 from botocore.vendored import requests
-import os
+from os import environ
 
-bot_api_key = os.environ['BOT_API_KEY']
+bot_api_key = environ['BOT_API_KEY']
 bot_api_url = "https://api.telegram.org/bot{0}".format(bot_api_key)
 
 def lambda_handler(event, context):
-    message = json.loads(event['body'])['message']
+    message = jsload(event['body'])['message']
     chat_id = message['chat']['id']
     sticker_file_id = None
     message_id = 0
@@ -33,21 +32,19 @@ def send_image(chat_id,message_id,file_id):
 		return False
 	file_path = getFile_req['result']['file_path']
 	file_url = "https://api.telegram.org/file/bot{0}/{1}".format(bot_api_key,file_path)
-	r = requests.get(file_url)
-	im = Image.open(BytesIO(r.content))
-	rgb_im = im.convert('RGB')
-	imgfile = BytesIO()
-	rgb_im.save(imgfile, "PNG")
-	imgfile.seek(0)
+	in_file = "/tmp/{0}.webp".format(file_id)
+	out_file = "/tmp/{0}.png".format(file_id)
+	with open(in_file,'wb') as fd:
+		fd.write(requests.get(file_url).content)
+	run(['bin/dwebp', '-o',out_file,'--',in_file])
 	send_body = {
 		'chat_id': chat_id,
 		'reply_to_message_id': message_id
 	}
+	files_body = { 'photo' : open(out_file,'rb') }
 	sendPhoto_url = "{0}/sendPhoto".format(bot_api_url)
 	send_chat_action(chat_id,'upload_photo')
-	r = requests.post(sendPhoto_url, files={'photo':imgfile}, data=send_body)
-	if r.status_code != 200:
-		print(r.content)
+	r = requests.post(sendPhoto_url, files=files_body, data=send_body)
 
 def send_chat_action(chat_id,action):
 	requests.post("{0}/sendChatAction".format(bot_api_url), 
