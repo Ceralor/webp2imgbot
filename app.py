@@ -2,7 +2,12 @@ from bottle import Bottle, request, response
 from helpers import send_image, send_chat_action
 app = Bottle()
 
-@app.route('/', method='POST')
+@app.route('/')
+def greeter():
+    response.status = 200
+    return "Hello"
+
+@app.route('/procimg', method='POST')
 def message_handler():
     message = request.json['message']
     chat_id = message['chat']['id']
@@ -18,4 +23,5 @@ def message_handler():
         send_chat_action(chat_id,'upload_photo')
         send_image(chat_id,message_id,sticker_file_id)
     response.type = 'text/plain'
+    response.status = 200
     return ''
