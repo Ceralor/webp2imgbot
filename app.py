@@ -12,6 +12,7 @@ def message_handler():
         sticker_file_id = message['sticker']['file_id']
         message_id = message['message_id']
     if 'reply_to_message' in message.keys() and \
+        "text" in message.keys() and \
         "@autowebp2imgbot" in message["text"] and \
         'sticker' in message['reply_to_message'].keys():
         sticker_file_id = message['reply_to_message']['sticker']['file_id']
