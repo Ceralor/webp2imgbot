@@ -22,3 +22,5 @@ def message_handler():
     response.type = 'application/json'
     response.status = 200
     return '{}'
+
+application.run(server="paste")
