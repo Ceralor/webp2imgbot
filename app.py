@@ -4,6 +4,8 @@ application = Bottle()
 
 @application.route('/', method='POST')
 def message_handler():
+    if "message" not in request.json.keys():
+        return '{}'
     message = request.json['message']
     chat_id = message['chat']['id']
     sticker_file_id = None
