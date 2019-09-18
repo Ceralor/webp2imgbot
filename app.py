@@ -1,8 +1,8 @@
 from bottle import Bottle, request, response
 from helpers import send_image, send_chat_action
-app = Bottle()
+appplication = Bottle()
 
-@app.route('/', method='POST')
+@application.route('/', method='POST')
 def message_handler():
     message = request.json['message']
     chat_id = message['chat']['id']
