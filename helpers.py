@@ -20,7 +20,8 @@ def send_image(chat_id,message_id,file_id):
     out_file.seek(0)
     send_body = {
         'chat_id': chat_id,
-        'reply_to_message_id': message_id
+        'reply_to_message_id': message_id,
+        'disable_notification': True
     }
     files_body = { 'document' : ("%s.png"%(file_id,), out_file, 'image/png' )}
     sendPhoto_url = "{0}/sendDocument".format(bot_api_url)
