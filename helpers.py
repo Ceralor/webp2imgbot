@@ -22,8 +22,8 @@ def send_image(chat_id,message_id,file_id):
         'chat_id': chat_id,
         'reply_to_message_id': message_id
     }
-    files_body = { 'photo' : out_file }
-    sendPhoto_url = "{0}/sendPhoto".format(bot_api_url)
+    files_body = { 'document' : out_file }
+    sendPhoto_url = "{0}/sendDocument".format(bot_api_url)
     send_chat_action(chat_id,'upload_photo')
     r = requests.post(sendPhoto_url, files=files_body, data=send_body)
 
