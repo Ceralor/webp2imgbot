@@ -18,10 +18,7 @@ def send_image(chat_id,message_id,file_id):
     in_im = Image.open(in_file).convert('RGBA')
     out_im = Image.new('RGBA',in_im.size)
     out_im.paste(in_im)
-    print('Converting to RGB')
-    out_im.convert('RGB')
-    print('Saving as JPEG')
-    out_im.save(out_file,'jpeg',quality=85,optimize=True)
+    out_im.convert('RGB').save(out_file,'jpeg',quality=85,optimize=True)
     out_file.seek(0)
     send_body = {
         'chat_id': chat_id,
