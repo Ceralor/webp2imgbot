@@ -10,7 +10,7 @@ def message_handler():
     chat_id = message['chat']['id']
     sticker_file_id = None
     message_id = 0
-    if 'sticker' in message.keys() and 'emoji' not in message['sticker'].keys():
+    if 'sticker' in message.keys() and 'emoji' not in message['sticker'].keys() and (message['sticker']['width'] != 512 and message['sticker']['heigh'] != 512):
         sticker_file_id = message['sticker']['file_id']
         message_id = message['message_id']
     if 'reply_to_message' in message.keys() and \
