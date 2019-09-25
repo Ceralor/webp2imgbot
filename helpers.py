@@ -15,7 +15,7 @@ def send_image(chat_id,message_id,file_id):
     out_file = io.BytesIO()
     in_file.write(requests.get(file_url).content)
     in_file.seek(0)
-    in_im = Image.open(in_file,'RGBA')
+    in_im = Image.open(in_file).convert('RGBA')
     out_im = Image.new('RGBA',in_im.size)
     out_im.paste(in_im)
     out_im.convert('RGB')
