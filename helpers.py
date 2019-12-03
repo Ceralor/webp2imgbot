@@ -4,7 +4,7 @@ from config import bot_api_key
 
 bot_api_url = "https://api.telegram.org/bot{0}".format(bot_api_key)
 
-def send_image(chat_id,message_id,file_id):
+def send_image(chat_id,message_id,file_id,convert_png=False):
     getFile_url = "{0}/getFile".format(bot_api_url)
     getFile_req = requests.post(getFile_url, data={'file_id':file_id}).json()
     if getFile_req['ok'] == False:
@@ -15,15 +15,21 @@ def send_image(chat_id,message_id,file_id):
     out_file = io.BytesIO()
     in_file.write(requests.get(file_url).content)
     in_file.seek(0)
-    im = Image.open(in_file).convert('RGB')
-    im.save(out_file,'jpeg',quality=85,optimize=True)
+    if (convert_png):
+        im = Image.open(in_file).convert('RGBA')
+        im.save(out_file,'png',quality=85,optimize=True)
+        newfilename = "%s.png"%(file_id,)
+    else:
+        im = Image.open(in_file).convert('RGB')
+        im.save(out_file,'jpeg',quality=85,optimize=True)
+        newfilename = "%s.jpg"%(file_id,)
     out_file.seek(0)
     send_body = {
         'chat_id': chat_id,
         'reply_to_message_id': message_id,
         'disable_notification': True
     }
-    files_body = { 'document' : ("%s.jpg"%(file_id,), out_file, 'image/jpeg' )}
+    files_body = { 'document' : (newfilename, out_file, 'image/jpeg' )}
     sendPhoto_url = "{0}/sendDocument".format(bot_api_url)
     send_chat_action(chat_id,'upload_photo')
     r = requests.post(sendPhoto_url, files=files_body, data=send_body)
